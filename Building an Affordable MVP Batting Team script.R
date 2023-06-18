@@ -17,7 +17,7 @@ summary(mlb_cleaned$Salary)
 summary(mlb_cleaned$RBI)
 summary(mlb_cleaned$Runs)
 
-  ## Explore
+## Explore
  
 mlb_mvp = mlb_cleaned |> 
   dplyr::filter(Season %in% c('2016':'2006') & RBI > 13 & Runs > 14 & Salary < 410000) |> 
