@@ -1,0 +1,89 @@
+---
+title: "The Ethics of AI-Generated Content"
+author: "Alan Lam"
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    toc: yes
+    toc_float: yes
+    number_sections: no
+    pdf_document: default
+  echo: FALSE
+  knitr:
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r,message=F,warning=F}
+kotel=readxl::read_excel('KBC.xlsx',col_names = T)
+kotel_data = kotel[-12:-16,]
+```
+
+```{r}
+shapiro.test(kotel_data$`Content at Scale (for AI)`)
+
+check_normality(kotel_data$`Content at Scale (for AI)`)
+```
+
+```{r,warning=F,message=F}
+library(gridExtra)
+
+k1=kotel_data |> 
+  ggplot(aes(`CopyLeaks (for AI)`))+
+  geom_histogram(aes(y=..density..))+
+  geom_density(color='red',lwd=1)
+
+k2=kotel_data |> 
+  ggplot(aes(`Content at Scale (for AI)`))+
+  geom_histogram(aes(y=..density..))+
+  geom_density(color='blue',lwd=1)
+
+grid.arrange(k1,k2)
+```
+
+```{r}
+
+wilcox.test(kotel_data$`CopyLeaks (for AI)`,kotel_data$`Content at Scale (for AI)`,conf.int = .95,mu=0,paired=T)
+```
+This shows consistency due to no significant diff. between CopyLeaks and Content. The results of CopyLeaks and Content will be averaged to be split into two groups, AI and human, to determine if there exists any difference between them.
+
+```{r,warning=F}
+kotel_ai = kotel_data %>% 
+     dplyr::filter(Verdict %in% c('AI'))
+kotel_human = kotel_data %>% 
+     dplyr::filter(Verdict %in% 'Human')
+  
+wilcox.test(kotel_ai$`Average of CopyLeaks and Content`,kotel_human$`Average of CopyLeaks and Content`,conf.int = .95,paired=F,mu=0)
+
+```
+
+Sig. diff. between AI and human generated results. It was not due to random chance.
+
+```{r,message=F,warning=F}
+kotel_data$Date=as.Date(kotel_data$Date)
+
+kotel_data |> 
+  ggplot(aes(x=Date,y=`Average of CopyLeaks and Content`))+
+  geom_line(size=1)+
+  geom_jitter(size=2.5,color='steelblue')+
+  labs(title= 'KBC Newsletters and Blogs from February 2021 to March 2023',x='Year and Month',y='AI Detection Percentage',caption='Source: Average of CopyLeaks and Content at Scale')+
+  theme_light()+
+  theme(plot.title = element_text(hjust=.5))+
+  geom_smooth(method='auto',se=F,lwd=1)+
+  annotate('text',label='75.95%',x=as.Date('2022-09-19'),y=81)+
+  annotate('text',label='59.15%',x=as.Date('2023-03-01'),y=65)+
+  annotate('text',label='n = 11',x=as.Date('2021-07-05'),y=75)+
+  geom_point(x=as.Date('2023-03-02'),y=59.15,color='red',size=3.5)+
+  geom_point(x=as.Date('2022-09-19'),y=75.95,color='red',size=3.5)
+
+```
+
+```{r}
+kotel_data %>% 
+  tabyl(Verdict) %>% 
+  adorn_pct_formatting(affix_sign =T,digits=2) %>% 
+  adorn_totals('row')
+```

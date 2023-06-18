@@ -1,0 +1,43 @@
+---
+title: 'Baseball from 1871 to 2022'
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    toc: yes
+    toc_float: yes
+    number_sections: no
+  word_document:
+    toc: yes
+---
+
+Source: [Lahman Database](http://seanlahman.com/download-baseball-database/)
+
+```{r,echo=F}
+batting=read.csv('batting 1871-2022.csv')
+
+batting=batting %>% 
+  dplyr::rename(Games=G,Runs=R,Hits=H,Doubles=X2B,Triples=X3B,HRuns=HR,Stolen_Bases=SB,Caught_Stealing=CS,Base_on_Balls=BB,Strikeouts=SO,League=lgID,At_Bats=AB,Intentional_Walks=IBB,Hit_by_Pitch=HBP,Sacrifice_Hits=SH,Sacrifice_Flies=SF,Year=yearID)
+
+
+```
+
+Batting data gathered from 1871-2022.
+
+```{r}
+batting %>% 
+  group_by(playerID,teamID,Year) %>% 
+  summarise(n=max(Runs)) %>% 
+  arrange(desc(n))
+
+```
+
+
+```{r}
+plot(mod1hitstoruns)
+
+summary(mod1hitstoruns)
+
+check_h(mod1hitstoruns)
+```
+
