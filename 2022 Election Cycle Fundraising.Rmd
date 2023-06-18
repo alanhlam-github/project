@@ -1,0 +1,150 @@
+---
+title: "2022 Election Cycle Fundraising"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+    number_sections: no
+  pdf_document: default
+  word_document:
+    toc: yes
+
+---
+test
+Source: [data.world](https://data.world/makeovermonday/2022w44)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,message = F,warning=F)
+
+library(rio)
+
+MVP_party=import('https://github.com/alanhlam-github/dataset/raw/main/2022%20election%20cycle%20fundraising.xlsx')
+```
+
+Which political member(s) raised the most amount of money while spending the least?
+
+## Party Control of Congress
+```{r}
+library(janitor)
+
+MVP_party |> 
+  tabyl(Party,Chamber) |> 
+  adorn_totals() |> 
+  adorn_percentages('all') |> 
+  adorn_pct_formatting(digits = 1,affix_sign = T) |> 
+  adorn_ns(position='front')
+```
+
+The Democrats control the House and Senate, though only by a small margin.
+
+
+## Check for Normality
+```{r}
+
+library(gridExtra)
+
+d1=MVP_party %>% 
+  ggplot(aes(Raised))+
+  geom_histogram(aes(y=..density..))+
+  geom_density(col='blue')
+
+d2=MVP_party %>% 
+  ggplot(aes(Spent))+
+  geom_histogram(aes(y=..density..))+
+  geom_density(col='red')
+
+grid.arrange(d1,d2)
+
+```
+
+`Raised` and `Spent` variables are not normally distributed.
+
+## Correlation Test
+Is there a relationship between `Raised` and `Spent`?
+
+```{r}
+cor.test(MVP_party$Spent,MVP_party$Raised,method='spearman')
+```
+
+## Scatter Plot
+
+Given a correlation rho of 0.92, there is a very strong relationship between `Spent` and `Raised`. 
+```{r}
+library(plotly)
+
+t1=MVP_party |> 
+  ggplot(aes(x=Spent,y=Raised))+
+  geom_point()+
+  geom_smooth(method='auto')+
+  theme_bw()+
+  theme(plot.title = element_text(hjust=.5))+
+  labs(title = 'Dollars Raised by Dollars Spent', x='Dollars Spent in Millions',y='Dollars Raised in Millions',caption = 'Source: OpenSecrets.org')+
+  annotate('text', label='rs = 0.92',x=30000000,y=60000000,color='blue')
+
+ggplotly(t1)
+
+```
+
+
+## Insight
+Let's see which member(s) had the best return on invest (ROI) and compare how much they `Raised` vs. `Spent`.
+```{r}
+
+MVP_party_best_ROI = MVP_party |> 
+  mutate(ROI_percentage = (Raised/Spent)*100) |> 
+  select(Member,`ROI %`=ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
+  arrange(desc(`ROI %`))
+
+MVP_party_best_ROI
+```
+
+Senator Joe Manchin had a 932% ROI ((7790164 / 835794) * 100 = 932.0675%) for the 2022 election cycle. In other words, every $1 spent generated $932 in return. One of the limitations of this data set is that it does not reveal what Senator Manchin did to achieve such an ROI, but it does alert us to pay attention to his business strategy for fundraising.
+
+## Generalized Linear Model
+
+A predictive model can be built using this data set to predict the approximate outcome of `Raised` if given the value(s) for `Spent`. A generalized linear model (GLM) will be used to compensate for the outlier values.
+
+```{r}
+mod1=glm(Raised~Spent,data=MVP_party)
+
+check_model(mod1)
+
+summary(mod1)
+
+report(mod1)
+```
+
+Given a p-value of < 2e-16, `Spent` is deemed useful for predicting `Raised`.
+
+## Predicting the Outcome
+
+How much money would be `Raised` if $500,000, $1,000,000, and $2,000,000 were `Spent`? Let's see what the model shows:
+
+```{r}
+new_spent=data.frame(Spent=c(500000,1000000,2000000))
+
+predict(mod1,new_spent) |> round(2)
+
+```
+
+$864,492.90, $1,438,711.80, and $2,587,149.50, respectively. Hover mouse cursor or finger tap the data points on the blue trend line to see more details:
+
+```{r}
+t2=MVP_party %>%  
+  filter(Spent >= 500000 & Spent <= 2000000 & Raised >= 800000 & Raised <= 3000000) %>% 
+  ggplot(aes(x=Spent,y=Raised))+
+  geom_point(size=1)+
+  geom_smooth(method='auto')+
+  theme_bw()+
+  theme(plot.title = element_text(hjust=.5))+
+  labs(title = 'Predictive Model', x='Dollars Spent',y='Dollars Raised',caption = 'Source: OpenSecrets.org')
+
+ggplotly(t2)
+```
+
+## [Source Code](https://github.com/alanhlam-github/project/blob/main/2022%20Election%20Cycle%20Fundraising.Rmd)
+
+```{r}
+sessionInfo()
+```
