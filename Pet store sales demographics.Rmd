@@ -1,4 +1,3 @@
-
 ---
 title: "Pet Store Sales"
 output:
@@ -7,9 +6,6 @@ output:
     toc: yes
     toc_float: yes
     number_sections: no
-    pdf_document: default
-  word_document:
-    toc: yes
 ---
 
 This is data from a pet store's in-person and online sales.
