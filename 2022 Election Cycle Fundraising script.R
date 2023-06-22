@@ -2,7 +2,7 @@ library(rio)
 
 MVP_party=import('https://github.com/alanhlam-github/dataset/raw/main/2022%20election%20cycle%20fundraising.xlsx')
 
-## Party Control of Congress
+#Party Control of Congress
 library(janitor)
 
 MVP_party |> 
@@ -12,7 +12,7 @@ MVP_party |>
   adorn_pct_formatting(digits = 1,affix_sign = T) |> 
   adorn_ns(position='front')
 
-## Check for Normality
+#Check for Normality
 library(gridExtra)
 
 d1=MVP_party |> 
@@ -27,10 +27,10 @@ d2=MVP_party |>
 
 grid.arrange(d1,d2)
 
-## Correlation Test
+#Correlation Test
 cor.test(MVP_party$Spent,MVP_party$Raised,method='spearman')
 
-## Scatter Plot
+#Scatter Plot
 library(plotly)
 
 t1=MVP_party |> 
@@ -44,7 +44,7 @@ t1=MVP_party |>
 
 ggplotly(t1)
 
-## Insight
+#Insight
 MVP_party_best_ROI = MVP_party |> 
   mutate(ROI_percentage = (Raised/Spent)*100) |> 
   select(Member,`ROI %`=ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
@@ -52,19 +52,32 @@ MVP_party_best_ROI = MVP_party |>
 
 MVP_party_best_ROI
 
-## Generalized Linear Model
-mod1=glm(Raised~Spent,data=MVP_party)
+#Test assumptions
+library(gvlma)
 
-check_model(mod1)
+mod1=lm(Raised~Spent,data=MVP_party)
 
-summary(mod1)
+plot(mod1)
 
-report(mod1)
+gv=gvlma(mod1)
 
-## Predicting the Outcome
+summary(gv)
+
+#Assumptions for LM not met!
+
+#Generalized Linear Model
+mod2=glm(Raised~Spent,data=MVP_party)
+
+check_model(mod2)
+
+summary(mod2)
+
+report(mod2)
+
+#Predicting the Outcome
 new_spent=data.frame(Spent=c(500000,1000000,2000000))
 
-predict(mod1,new_spent) |> round(2)
+predict(mod2,new_spent) |> round(2)
 
 
 t2=MVP_party %>%  
