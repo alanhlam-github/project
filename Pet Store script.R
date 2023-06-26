@@ -12,7 +12,7 @@ inu |>
   ggplot(aes(x=cust_age))+
   theme_bw()+
   geom_bar(color='darkred')+
-  labs(y='Total Count',x='Customer Ages')
+  labs(y='Count',x='Customer Age')
 
 inu |> 
   group_by(Age=cust_age) |> 
@@ -51,11 +51,11 @@ inu3 %>%
   theme_bw()+
   labs(title='Items Sold per Unit',x='Product Category',y='Count',fill=' ')+
   theme(plot.title = element_text(hjust=.5))+
-  scale_fill_manual(values = c('red','blue'))
+  scale_fill_manual(values = c('red','lightblue'))
 
 inu %>% 
-  rename(Product_Category=prod_category) %>% 
-  tabyl(Product_Category,prod_animal_type) %>%
+  rename(`Product Category`=prod_category) %>% 
+  tabyl(`Product Category`,prod_animal_type) %>%
   adorn_totals() %>% 
   adorn_percentages('all') %>%
   adorn_pct_formatting(digits = 1,affix_sign = T) %>%
