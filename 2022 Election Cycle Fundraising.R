@@ -1,8 +1,8 @@
-MVP_party=import('https://github.com/alanhlam-github/dataset/raw/main/2022%20election%20cycle%20fundraising.xlsx')
+party=import('https://github.com/alanhlam-github/dataset/raw/main/2022%20election%20cycle%20fundraising.xlsx')
 
 #Party Control of Congress
 
-MVP_party |> 
+party |> 
   tabyl(Party,Chamber) |> 
   adorn_totals() |> 
   adorn_percentages('all') |> 
@@ -12,12 +12,12 @@ MVP_party |>
 
 #Check for Normality
 
-d1=MVP_party |> 
+d1=party |> 
   ggplot(aes(Raised))+
   geom_histogram(aes(y=..density..))+
   geom_density(col='blue')
 
-d2=MVP_party |> 
+d2=party |> 
   ggplot(aes(Spent))+
   geom_histogram(aes(y=..density..))+
   geom_density(col='red')
@@ -25,11 +25,11 @@ d2=MVP_party |>
 grid.arrange(d1,d2)
 
 #Correlation Test
-cor.test(MVP_party$Spent,MVP_party$Raised,method='spearman')
+cor.test(party$Spent,party$Raised,method='spearman')
 
 #Scatter Plot
 
-t1=MVP_party |> 
+t1=party |> 
   ggplot(aes(x=Spent,y=Raised))+
   geom_point()+
   geom_smooth(method='auto')+
@@ -41,18 +41,18 @@ t1=MVP_party |>
 ggplotly(t1)
 
 #Insight
-MVP_party_best_ROI = MVP_party |> 
+party_best_ROI = party |> 
   mutate(ROI_percentage = (Raised/Spent)*100) |> 
   select(Member,ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
   arrange(desc(ROI_percentage))
 
-datatable(MVP_party_best_ROI,colnames=c('ROI %'=3)) |> 
+datatable(party_best_ROI,colnames=c('ROI %'=3)) |> 
   formatRound('ROI %',2) |> 
   formatCurrency(columns=(c('Raised','Spent','Debts','Cash on Hand')))
 
 #Test assumptions
 
-mod1=lm(Raised~Spent,data=MVP_party)
+mod1=lm(Raised~Spent,data=party)
 
 plot(mod1)
 
@@ -63,7 +63,7 @@ summary(gv)
 #Assumptions for LM not met.
 
 #Generalized Linear Model
-mod2=glm(Raised~Spent,data=MVP_party)
+mod2=glm(Raised~Spent,data=party)
 
 check_model(mod2)
 
@@ -77,7 +77,7 @@ new_spent=data.frame(Spent=c(500000,1000000,2000000))
 predict(mod2,new_spent) |> round(2)
 
 
-t2=MVP_party |>  
+t2=party |>  
   filter(Spent >= 500000 & Spent <= 2000000 & Raised >= 800000 & Raised <= 3000000) |> 
   ggplot(aes(x=Spent,y=Raised))+
   geom_point(size=1)+
