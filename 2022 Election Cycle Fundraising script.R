@@ -1,5 +1,4 @@
 library(rio)
-
 MVP_party=import('https://github.com/alanhlam-github/dataset/raw/main/2022%20election%20cycle%20fundraising.xlsx')
 
 #Party Control of Congress
@@ -39,7 +38,7 @@ t1=MVP_party |>
   geom_smooth(method='auto')+
   theme_bw()+
   theme(plot.title = element_text(hjust=.5))+
-  labs(title = 'Dollars Raised by Dollars Spent', x='Dollars Spent in Millions',y='Dollars Raised in Millions',caption = 'Source: OpenSecrets.org')+
+  labs(title = 'Dollars Raised by Dollars Spent', x='Dollars Spent in Millions',y='Dollars Raised in Millions')+
   annotate('text', label='rs = 0.92',x=30000000,y=60000000,color='blue')
 
 ggplotly(t1)
@@ -87,7 +86,7 @@ t2=MVP_party %>%
   geom_smooth(method='auto')+
   theme_bw()+
   theme(plot.title = element_text(hjust=.5))+
-  labs(title = 'Predictive Model', x='Dollars Spent',y='Dollars Raised',caption = 'Source: OpenSecrets.org')
+  labs(title = 'Predictive Model', x='Dollars Spent',y='Dollars Raised')
 
 ggplotly(t2)
 

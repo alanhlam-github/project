@@ -1,6 +1,5 @@
-knitr::opts_chunk$set(message=F,warning=F,echo = F)
-
-inu=readxl::read_xlsx('pet store.xlsx')
+library(rio)
+inu=import('https://github.com/alanhlam-github/dataset/blob/main/pet%20store.xlsx')
 
 table(is.na(inu))
 table(duplicated(inu))
