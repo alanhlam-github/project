@@ -77,8 +77,8 @@ new_spent=data.frame(Spent=c(500000,1000000,2000000))
 predict(mod2,new_spent) |> round(2)
 
 
-t2=MVP_party %>%  
-  filter(Spent >= 500000 & Spent <= 2000000 & Raised >= 800000 & Raised <= 3000000) %>% 
+t2=MVP_party |>  
+  filter(Spent >= 500000 & Spent <= 2000000 & Raised >= 800000 & Raised <= 3000000) |> 
   ggplot(aes(x=Spent,y=Raised))+
   geom_point(size=1)+
   geom_smooth(method='auto')+

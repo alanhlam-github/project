@@ -24,7 +24,7 @@ inu |>
 inu2=data.frame(States=fct_infreq(inu$cust_state))
 
 #Added scale_y_discrete(limits = rev(levels(inu2$States))) to reverse ascending order
-inu2 %>%
+inu2 |> 
   ggplot(aes(y=States,fill=inu$cust_state %in% c('New York','Pennsylvania','New Jersey')))+
   theme_bw()+
   geom_bar()+
@@ -35,9 +35,9 @@ inu2 %>%
   scale_fill_manual(values = c('red','darkgreen'))
 
 #Rename variables in order
-inu %>% 
-  rename('State'=cust_state) %>% 
-  tabyl('State') %>%
+inu |> 
+  rename('State'=cust_state) |> 
+  tabyl('State') |> 
   adorn_pct_formatting(digits = 1,affix_sign = T) |> 
   rename('Percent'=percent) |> 
   arrange(desc(n)) |> 
@@ -47,7 +47,7 @@ inu %>%
 #Create inu3 to order prod category
 inu3=data.frame(prod_category=fct_infreq(inu$prod_category),prod_animal_type=inu$prod_animal_type)
 
-inu3 %>% 
+inu3 |> 
   ggplot(aes(x=prod_category,fill=prod_animal_type))+
   geom_bar()+
   theme_bw()+
@@ -55,21 +55,21 @@ inu3 %>%
   theme(plot.title = element_text(hjust=.5))+
   scale_fill_manual(values = c('red','lightblue'))
 
-inu %>% 
-  rename(`Product Category`=prod_category) %>% 
-  tabyl(`Product Category`,prod_animal_type) %>%
-  adorn_totals() %>% 
-  adorn_percentages('all') %>%
-  adorn_pct_formatting(digits = 1,affix_sign = T) %>%
-  adorn_ns(position='front') %>% 
+inu |> 
+  rename(`Product Category`=prod_category) |> 
+  tabyl(`Product Category`,prod_animal_type) |>
+  adorn_totals() |> 
+  adorn_percentages('all') |>
+  adorn_pct_formatting(digits = 1,affix_sign = T) |>
+  adorn_ns(position='front') |> 
   arrange(desc(Cat)) |> 
   datatable(rownames = T,colnames = c('Cat'=3,'Dog'=4),options=list(searching=F))
 
 #create DF to round to two decimals
 inu_rounded=data.frame(prod_title=inu$prod_title,prod_animal_type=inu$prod_animal_type,total_sales=round(inu$total_sales,2))
 
-inu4=inu_rounded %>% 
-  group_by('Product Title'=prod_title,'Animal Type'=prod_animal_type) %>%
+inu4=inu_rounded |> 
+  group_by('Product Title'=prod_title,'Animal Type'=prod_animal_type) |>
   summarise(Sales=sum(total_sales)) |> 
   arrange(-Sales)
 
