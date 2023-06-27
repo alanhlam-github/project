@@ -1,4 +1,3 @@
-library(rio)
 inu=import('https://github.com/alanhlam-github/dataset/blob/main/pet%20store.xlsx')
 
 table(is.na(inu))
@@ -12,7 +11,8 @@ inu |>
   ggplot(aes(x=cust_age))+
   theme_bw()+
   geom_bar(color='darkred')+
-  labs(y='Count',x='Customer Age')
+  labs(y='Count',x='Customer Age',title='Ages of Customers')+
+  theme(plot.title = element_text(hjust=.5))
 
 inu |> 
   tabyl(cust_age) |> 
@@ -78,7 +78,7 @@ inu4 |>
   ggplot(aes(x=Sales, y=reorder(`Product Title`,Sales),fill=Sales > 119000))+
   theme_bw()+
   geom_bar(stat='identity')+
-  labs(title='Products Sold by Dollars',x='Dollars',y='Product Items')+
+  labs(title='Products Sold by Dollars',x='Dollar Amount',y='Product Items')+
   scale_fill_manual(values = c('darkred','steelblue'))+
   guides(fill=F)+
   theme(plot.title=(element_text(hjust=.5)))

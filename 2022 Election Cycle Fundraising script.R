@@ -1,18 +1,16 @@
-library(rio)
 MVP_party=import('https://github.com/alanhlam-github/dataset/raw/main/2022%20election%20cycle%20fundraising.xlsx')
 
 #Party Control of Congress
-library(janitor)
 
 MVP_party |> 
   tabyl(Party,Chamber) |> 
   adorn_totals() |> 
   adorn_percentages('all') |> 
   adorn_pct_formatting(digits = 1,affix_sign = T) |> 
-  adorn_ns(position='front')
+  adorn_ns(position='front') |> 
+  datatable()
 
 #Check for Normality
-library(gridExtra)
 
 d1=MVP_party |> 
   ggplot(aes(Raised))+
@@ -30,7 +28,6 @@ grid.arrange(d1,d2)
 cor.test(MVP_party$Spent,MVP_party$Raised,method='spearman')
 
 #Scatter Plot
-library(plotly)
 
 t1=MVP_party |> 
   ggplot(aes(x=Spent,y=Raised))+
@@ -46,13 +43,14 @@ ggplotly(t1)
 #Insight
 MVP_party_best_ROI = MVP_party |> 
   mutate(ROI_percentage = (Raised/Spent)*100) |> 
-  select(Member,`ROI %`=ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
-  arrange(desc(`ROI %`))
+  select(Member,ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
+  arrange(desc(ROI_percentage))
 
-MVP_party_best_ROI
+datatable(MVP_party_best_ROI,colnames=c('ROI %'=3)) |> 
+  formatRound('ROI %',2) |> 
+  formatCurrency(columns=(c('Raised','Spent','Debts','Cash on Hand')))
 
 #Test assumptions
-library(gvlma)
 
 mod1=lm(Raised~Spent,data=MVP_party)
 
@@ -62,7 +60,7 @@ gv=gvlma(mod1)
 
 summary(gv)
 
-#Assumptions for LM not met!
+#Assumptions for LM not met.
 
 #Generalized Linear Model
 mod2=glm(Raised~Spent,data=MVP_party)
