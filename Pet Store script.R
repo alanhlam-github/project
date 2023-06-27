@@ -11,7 +11,7 @@ inu |>
   ggplot(aes(x=cust_age))+
   theme_bw()+
   geom_bar(color='darkred')+
-  labs(y='Count',x='Customer Age',title='Ages of Customers')+
+  labs(y='Count',x='Customer Age',title='Total Count of Customers by Age')+
   theme(plot.title = element_text(hjust=.5))
 
 inu |> 
@@ -62,7 +62,7 @@ inu %>%
   adorn_percentages('all') %>%
   adorn_pct_formatting(digits = 1,affix_sign = T) %>%
   adorn_ns(position='front') %>% 
-  arrange(desc(cat)) |> 
+  arrange(desc(Cat)) |> 
   datatable(rownames = T,colnames = c('Cat'=3,'Dog'=4),options=list(searching=F))
 
 #create DF to round to two decimals
@@ -83,6 +83,7 @@ inu4 |>
   guides(fill=F)+
   theme(plot.title=(element_text(hjust=.5)))
 
-inu4
+datatable(inu4,colnames=c('Total Sales'='Sales')) |> 
+  formatCurrency(columns=c('Total Sales'))
 
 sessionInfo()
