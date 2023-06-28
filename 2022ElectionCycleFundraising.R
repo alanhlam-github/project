@@ -46,7 +46,7 @@ party_best_ROI = party |>
   select(Member,ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
   arrange(desc(ROI_percentage))
 
-datatable(party_best_ROI,colnames=c('ROI %'=3)) |> 
+datatable(party_best_ROI,colnames=c('ROI %'=3),options = list(pageLength = 5)) |> 
   formatRound('ROI %',2) |> 
   formatCurrency(columns=(c('Raised','Spent','Debts','Cash on Hand')))
 

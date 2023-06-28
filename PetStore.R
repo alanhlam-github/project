@@ -53,7 +53,7 @@ pet3 |>
   theme_bw()+
   labs(title='Products Sold by Count',x='Product Category',y='Count',fill=' ')+
   theme(plot.title = element_text(hjust=.5))+
-  scale_fill_manual(values = c('red','lightblue'))
+  scale_fill_manual(values = c('red','steelblue'))
 
 pet |> 
   rename(`Product Category`=prod_category) |> 
@@ -69,21 +69,21 @@ pet |>
 pet_rounded=data.frame(prod_title=pet$prod_title,prod_animal_type=pet$prod_animal_type,total_sales=round(pet$total_sales,2))
 
 pet4=pet_rounded |> 
-  group_by('Product Title'=prod_title,'Animal Type'=prod_animal_type) |>
+  group_by('Animal Type'=prod_animal_type) |>
   summarise(Sales=sum(total_sales)) |> 
   arrange(-Sales)
 
 #Use reorder() to sort descending
-pet4 |> 
-  ggplot(aes(x=Sales, y=reorder(`Product Title`,Sales),fill=Sales > 119000))+
+pet |> 
+  ggplot(aes(y=total_sales, x=reorder(prod_animal_type,total_sales),fill=prod_animal_type))+
   theme_bw()+
   geom_bar(stat='identity')+
-  labs(title='Products Sold by Dollars',x='Dollar Amount',y='Product Items')+
-  scale_fill_manual(values = c('darkred','steelblue'))+
+  labs(title='Animal Product Types Sold by Dollars',x='Animal Product Type',y='Dollars')+
+  scale_fill_manual(values = c('red','steelblue'))+
   guides(fill=F)+
   theme(plot.title=(element_text(hjust=.5)))
 
-datatable(pet4,colnames=c('Total Sales'='Sales')) |> 
+datatable(pet4,colnames=c('Total Sales'='Sales','Animal Product Type'='Animal Type'),options=list(searching=F,dom='t')) |> 
   formatCurrency(columns=c('Total Sales'))
 
 sessionInfo()
