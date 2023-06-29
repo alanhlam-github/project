@@ -1,4 +1,4 @@
--- World population database query
+-- World population query
 
 SELECT sum(population)
 FROM world
@@ -6,7 +6,6 @@ FROM world
 SELECT distinct(continent)
 FROM world
 
--- Africa
 SELECT sum(gdp)
 FROM world
 WHERE continent = 'Africa'
@@ -20,16 +19,24 @@ SELECT sum(population)
 FROM world
 WHERE name IN ('Estonia', 'Latvia', 'Lithuania')
 
-SELECT continent, count(name)
-FROM world
-GROUP BY continent
-
 SELECT continent,count(name)
 FROM world
 WHERE population >= 10000000
 GROUP BY continent
 
-SELECT continent
+SELECT name
 FROM world
-WHERE population >= 100000000
-GROUP BY continent
+WHERE population > 
+(SELECT population FROM world WHERE name='Russia')
+
+-- GDP/population
+SELECT name
+FROM world
+WHERE continent = 'europe' and gdp/population > 
+(SELECT gdp/population FROM world WHERE name = 'united kingdom')
+
+SELECT name,continent
+FROM world
+WHERE continent in (SELECT continent FROM world
+WHERE name in ('Argentina','Australia'))
+ORDER BY name
