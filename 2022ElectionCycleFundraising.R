@@ -1,14 +1,13 @@
 party=import('https://github.com/alanhlam-github/dataset/raw/main/2022%20election%20cycle%20fundraising.xlsx')
 
-#Party Control of Congress
-
 party |> 
   tabyl(Party,Chamber) |> 
   adorn_totals() |> 
   adorn_percentages('all') |> 
   adorn_pct_formatting(digits = 1,affix_sign = T) |> 
   adorn_ns(position='front') |> 
-  datatable()
+  datatable(caption=htmltools::tags$caption(style =
+  'caption-side: top; text-align: left;','Table 1: Party Control of Congress'),options = list(dom='t'))
 
 #Check for Normality
 
@@ -42,12 +41,12 @@ ggplotly(t1)
 
 #Insight
 party_best_ROI = party |> 
-  mutate(ROI_percentage = (Raised/Spent)*100) |> 
+  mutate(ROI_percentage = (Raised/Spent)) |> 
   select(Member,ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
   arrange(desc(ROI_percentage))
 
-datatable(party_best_ROI,colnames=c('ROI %'=3),options = list(pageLength = 5)) |> 
-  formatRound('ROI %',2) |> 
+datatable(party_best_ROI,caption=htmltools::tags$caption(style = 'caption-side: top; text-align: left;','Table 2: ROI of Each Congress Member'),colnames=c('ROI'=3),options = list(pageLength = 5)) |> 
+  formatPercentage('ROI') |> 
   formatCurrency(columns=(c('Raised','Spent','Debts','Cash on Hand')))
 
 #Test assumptions
