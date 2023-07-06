@@ -67,7 +67,8 @@ pet |>
   datatable(rownames = T,colnames = c('Cat'=3,'Dog'=4),options=list(searching=F))
 
 #create DF to round to two decimals
-pet_rounded=data.frame(prod_title=pet$prod_title,prod_animal_type=pet$prod_animal_type,total_sales=round(pet$total_sales,2))
+pet_rounded=data.frame(prod_title=pet$prod_title,prod_animal_type=pet$prod_animal_type,
+                       total_sales=round(pet$total_sales,2))
 
 pet4=pet_rounded |> 
   group_by('Animal Type'=prod_animal_type) |>
@@ -109,7 +110,8 @@ total_sales_pct |>
   guides(fill=F)+
   scale_fill_manual(values = c('red','darkgreen'))
 
-datatable(total_sales_pct,colnames = c('Product Name'=2,'Cat or Dog'=3,'Total Sales'=4,'Percentage'=5)) |> formatCurrency('Total Sales') |> 
+datatable(total_sales_pct,colnames = c('Product Name'=2,'Cat or Dog'=3,'Total Sales'=4,'Percentage'=5)) |>
+  formatCurrency('Total Sales') |> 
   formatPercentage('Percentage')
 
 #create pct for reddy beddy overall sales

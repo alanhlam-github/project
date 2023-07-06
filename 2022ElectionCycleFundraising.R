@@ -45,7 +45,8 @@ party_best_ROI = party |>
   select(Member,ROI_percentage, Raised, Spent,Debts,`Cash on Hand`,everything()) |> 
   arrange(desc(ROI_percentage))
 
-datatable(party_best_ROI,caption=htmltools::tags$caption(style = 'caption-side: top; text-align: left;','Table 2: ROI of Each Congress Member'),colnames=c('ROI'=3),options = list(pageLength = 5)) |> 
+datatable(party_best_ROI,caption=htmltools::tags$caption(style = 'caption-side: top; text-align: left;','Table 2: ROI of Each Congress Member'),
+          colnames=c('ROI'=3),options = list(pageLength = 5)) |> 
   formatPercentage('ROI') |> 
   formatCurrency(columns=(c('Raised','Spent','Debts','Cash on Hand')))
 
