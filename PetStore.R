@@ -3,6 +3,36 @@ pet=import('https://github.com/alanhlam-github/dataset/blob/main/pet%20store.xls
 table(is.na(pet))
 table(duplicated(pet))
 
+## Sales Over Time; line plot daily sales
+pet_trend_date=pet |> 
+  group_by(date) |> 
+  summarise(sales=sum(total_sales))
+
+monthly_sales=pet |> 
+  group_by(trans_month) |> 
+  summarise(sales=sum(total_sales))
+
+pet_trend_date |> 
+  ggplot(aes(x=date,y=sales)) + 
+  geom_line(stat='identity')+
+  geom_smooth(method='auto')+
+  theme_bw()+
+  labs(title='Daily Sales from January 1 to June 30',x='Date',y='Dollars')+
+  theme(plot.title = element_text(hjust=.5))+
+  expand_limits(y=21000)
+
+#monthly sales barplot
+monthly_sales |> 
+  ggplot(aes(x=trans_month,y=sales,fill=sales))+
+  geom_bar(stat='identity')+
+  theme_bw()+
+  labs(title='Monthly Sales from January 1 to June 30',x='Date',y='Dollars')+
+  theme(plot.title = element_text(hjust=.5))+
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+
+  expand_limits(y=600000)+
+  scale_x_continuous(breaks=c(1,2,3,4,5,6),
+                     labels=c('January','February','March','April','May','June'))+
+  guides(fill=F)
 #Retention rate
 sum(duplicated(pet$cust_id))/sum(!duplicated(pet$cust_id))*100
 
@@ -86,7 +116,8 @@ pet |>
   guides(fill=F)+
   theme(plot.title=(element_text(hjust=.5)))
 
-datatable(pet4,colnames=c('Total Sales'='Sales','Animal Product Type'='Animal Type'),options=list(searching=F,dom='t')) |> 
+datatable(pet4,colnames=c('Total Sales'='Sales','Animal Product Type'='Animal Type'),
+          options=list(searching=F,dom='t')) |> 
   formatCurrency(columns=c('Total Sales'))
 
 
