@@ -1,4 +1,4 @@
-pet=import('https://github.com/alanhlam-github/dataset/blob/main/pet%20store.xlsx')
+pet=import('https://github.com/alanhlam-github/dataset/raw/main/pet_store.xlsx')
 
 table(is.na(pet))
 table(duplicated(pet))
