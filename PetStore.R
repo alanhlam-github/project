@@ -3,7 +3,15 @@ pet=import('https://github.com/alanhlam-github/dataset/raw/main/pet_store.xlsx')
 table(is.na(pet))
 table(duplicated(pet))
 
-## Sales Over Time; line plot daily sales
+# Quick Summary
+pet |> 
+  group_by(prod_category) |> 
+  summarise(sales=sum(total_sales)) |> 
+  arrange(-sales) |> 
+  datatable(rownames=F,colnames=c('Product Category'='prod_category','Total Sales'='sales'),options = list(dom='t')) |> 
+  formatCurrency('Total Sales')
+
+# Sales Over Time; line plot daily sales
 pet_trend_date=pet |> 
   group_by(date) |> 
   summarise(sales=sum(total_sales))
@@ -13,13 +21,14 @@ monthly_sales=pet |>
   summarise(sales=sum(total_sales))
 
 pet_trend_date |> 
-  ggplot(aes(x=date,y=sales)) + 
-  geom_line(stat='identity')+
-  geom_smooth(method='auto')+
+  ggplot(aes(x=date,y=sales,col=sales)) + 
+  geom_line(stat='identity',lwd=1)+
   theme_bw()+
-  labs(title='Daily Sales from January 1 to June 30',x='Date',y='Dollars')+
+  labs(title='Daily Sales from January 1 to June 30',x='Date',y='Dollars',col= ' ')+
   theme(plot.title = element_text(hjust=.5))+
-  expand_limits(y=25000)
+  expand_limits(y=25000)+
+  scale_y_continuous(labels = scales::comma)+
+  scale_color_gradient(high='red',low='steelblue')
 
 #monthly sales barplot
 monthly_sales |> 
@@ -28,11 +37,11 @@ monthly_sales |>
   theme_bw()+
   labs(title='Monthly Sales from January 1 to June 30',x='Date',y='Dollars')+
   theme(plot.title = element_text(hjust=.5))+
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+
   expand_limits(y=600000)+
   scale_x_continuous(breaks=c(1,2,3,4,5,6),
                      labels=c('January','February','March','April','May','June'))+
-  guides(fill=F)
+  guides(fill=F)+
+  scale_y_continuous(labels = scales::comma)
 #Retention rate
 sum(duplicated(pet$cust_id))/sum(!duplicated(pet$cust_id))*100
 
@@ -40,10 +49,11 @@ sum(duplicated(pet$cust_id))/sum(!duplicated(pet$cust_id))*100
 pet |> 
   ggplot(aes(x=cust_age))+
   theme_bw()+
-  geom_bar(color='darkred')+
+  geom_bar(color='darkred',fill='steelblue')+
   labs(y='Count',x='Customer Age',title='Total Count of Customers by Age')+
   theme(plot.title = element_text(hjust=.5))+
-  expand_limits(y=3000)
+  expand_limits(y=3000)+
+  scale_y_continuous(labels = scales::comma)
 
 pet |> 
   tabyl(cust_age) |> 
@@ -63,7 +73,8 @@ pet2 |>
   labs(y='US State',x='Transactions',title=' States by Transactions')+
   theme(plot.title=element_text(hjust=.5))+
   guides(fill=F)+
-  scale_fill_manual(values = c('red','darkgreen'))
+  scale_fill_manual(values = c('red','darkgreen'))+
+  scale_x_continuous(labels = scales::comma)
 
 #Rename variables in order
 pet |> 
@@ -85,7 +96,8 @@ pet3 |>
   expand_limits(y=12000)+
   labs(title='Product Categories Sold by Count',x='Product Category',y='Count',fill=' ')+
   theme(plot.title = element_text(hjust=.5))+
-  scale_fill_manual(values = c('red','steelblue'))
+  scale_fill_manual(values = c('orange','green'))+
+  scale_y_continuous(labels = scales::comma)
 
 pet |> 
   rename(`Product Category`=prod_category) |> 
@@ -113,9 +125,10 @@ pet |>
   expand_limits(y=1000000)+
   geom_bar(stat='identity')+
   labs(title='Animal Product Types Sold by Dollars',x='Animal Product Type',y='Dollars')+
-  scale_fill_manual(values = c('red','steelblue'))+
+  scale_fill_manual(values = c('orange','green'))+
   guides(fill=F)+
-  theme(plot.title=(element_text(hjust=.5)))
+  theme(plot.title=(element_text(hjust=.5)))+
+  scale_y_continuous(labels = scales::comma)
 
 datatable(pet4,colnames=c('Total Sales'='Sales','Animal Product Type'='Animal Type'),
           options=list(searching=F,dom='t')) |> 
@@ -137,7 +150,7 @@ total_sales_pct |>
   ggplot(aes(x=total_sales,y=reorder(prod_title,total_sales),fill=total_sales>200000))+
   geom_bar(stat='identity')+
   theme_bw()+
-  labs(x='Dollar Amount',y='Product Name',title='Product Sold by Dollar Amount')+
+  labs(x='Dollars',y='Product Name',title='Product Sold by Dollar Amount')+
   theme(plot.title = element_text(hjust=.5))+
   guides(fill=F)+
   scale_fill_manual(values = c('red','darkgreen'))
@@ -170,11 +183,11 @@ reddy_group_date=pet |>
 
 #Line plot
 reddy_group_date |> 
-  ggplot(aes(x=date,y=total_sales,col=total_sales))+
+  ggplot(aes(x=date,y=total_sales))+
   geom_line(lwd=1)+
-  labs(title='Reddy Beddy Daily Sales',x='Date',y='Dollars',col=' ')+
+  labs(title='Reddy Beddy Daily Sales',x='Date',y='Dollars')+
   theme(plot.title = element_text(hjust=.5))+
-  scale_color_gradient(high='red',low='steelblue')+
-  expand_limits(y=8000)
+  expand_limits(y=8000)+
+  scale_y_continuous(labels = scales::comma)
 
 sessionInfo()
