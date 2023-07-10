@@ -19,7 +19,7 @@ pet_trend_date |>
   theme_bw()+
   labs(title='Daily Sales from January 1 to June 30',x='Date',y='Dollars')+
   theme(plot.title = element_text(hjust=.5))+
-  expand_limits(y=21000)
+  expand_limits(y=25000)
 
 #monthly sales barplot
 monthly_sales |> 
@@ -42,7 +42,8 @@ pet |>
   theme_bw()+
   geom_bar(color='darkred')+
   labs(y='Count',x='Customer Age',title='Total Count of Customers by Age')+
-  theme(plot.title = element_text(hjust=.5))
+  theme(plot.title = element_text(hjust=.5))+
+  expand_limits(y=3000)
 
 pet |> 
   tabyl(cust_age) |> 
@@ -161,5 +162,19 @@ datatable(reddybeddy_pctoverallsales,colnames=c('State'=2,'Total Sales'=3,'Perce
   formatPercentage('Percentage') |> 
   formatCurrency('Total Sales')
 
+#Group by date for Reddy
+reddy_group_date=pet |> 
+  filter(prod_title %in% c('Reddy Beddy')) |>
+  group_by(date) |> 
+  summarise(total_sales=sum(total_sales))
+
+#Line plot
+reddy_group_date |> 
+  ggplot(aes(x=date,y=total_sales,col=total_sales))+
+  geom_line(lwd=1)+
+  labs(title='Reddy Beddy Daily Sales',x='Date',y='Dollars',col=' ')+
+  theme(plot.title = element_text(hjust=.5))+
+  scale_color_gradient(high='red',low='steelblue')+
+  expand_limits(y=8000)
 
 sessionInfo()

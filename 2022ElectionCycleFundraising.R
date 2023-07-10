@@ -31,10 +31,12 @@ cor.test(party$Spent,party$Raised,method='spearman')
 t1=party |> 
   ggplot(aes(x=Spent,y=Raised))+
   geom_point()+
+  scale_y_continuous(labels = scales::comma)+
+  scale_x_continuous(labels = scales::comma)+
   geom_smooth(method='auto')+
   theme_bw()+
   theme(plot.title = element_text(hjust=.5))+
-  labs(title = 'Dollars Raised by Dollars Spent', x='Dollars Spent in Millions',y='Dollars Raised in Millions')+
+  labs(title = 'Dollars Raised by Dollars Spent', x='Spent',y='Raised')+
   annotate('text', label='rs = 0.92',x=30000000,y=60000000,color='blue')
 
 ggplotly(t1)
@@ -84,7 +86,9 @@ t2=party |>
   geom_smooth(method='auto')+
   theme_bw()+
   theme(plot.title = element_text(hjust=.5))+
-  labs(title = 'Predictive Model', x='Dollars Spent',y='Dollars Raised')
+  labs(title = 'Predictive Model', x='Dollars Spent',y='Dollars Raised')+
+  scale_y_continuous(labels = scales::comma)+
+  scale_x_continuous(labels = scales::comma)
 
 ggplotly(t2)
 
