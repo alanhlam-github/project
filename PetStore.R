@@ -28,7 +28,7 @@ pet_trend_date |>
   theme(plot.title = element_text(hjust=.5))+
   expand_limits(y=25000)+
   scale_y_continuous(labels = scales::comma)+
-  scale_color_gradient(high='red',low='steelblue')
+  scale_fill_gradient(high='darkgreen',low='lightgreen')
 
 #monthly sales barplot
 monthly_sales |> 
@@ -41,7 +41,9 @@ monthly_sales |>
   scale_x_continuous(breaks=c(1,2,3,4,5,6),
                      labels=c('January','February','March','April','May','June'))+
   guides(fill=F)+
-  scale_y_continuous(labels = scales::comma)
+  scale_y_continuous(labels = scales::comma)+
+  scale_fill_gradient(high='darkgreen',low='lightgreen')
+
 #Retention rate
 sum(duplicated(pet$cust_id))/sum(!duplicated(pet$cust_id))*100
 
@@ -96,7 +98,7 @@ pet3 |>
   expand_limits(y=12000)+
   labs(title='Product Categories Sold by Count',x='Product Category',y='Count',fill=' ')+
   theme(plot.title = element_text(hjust=.5))+
-  scale_fill_manual(values = c('orange','green'))+
+  scale_fill_manual(values = c('darkorange','steelblue'))+
   scale_y_continuous(labels = scales::comma)
 
 pet |> 
@@ -125,7 +127,7 @@ pet |>
   expand_limits(y=1000000)+
   geom_bar(stat='identity')+
   labs(title='Animal Product Types Sold by Dollars',x='Animal Product Type',y='Dollars')+
-  scale_fill_manual(values = c('orange','green'))+
+  scale_fill_manual(values = c('darkorange','steelblue'))+
   guides(fill=F)+
   theme(plot.title=(element_text(hjust=.5)))+
   scale_y_continuous(labels = scales::comma)
@@ -147,15 +149,15 @@ total_sales_pct=pet_titles |>
   arrange(-overall)
 
 total_sales_pct |> 
-  ggplot(aes(x=total_sales,y=reorder(prod_title,total_sales),fill=total_sales>200000))+
+  ggplot(aes(x=total_sales,y=reorder(prod_title,total_sales),fill=prod_animal_type))+
   geom_bar(stat='identity')+
   theme_bw()+
-  labs(x='Dollars',y='Product Name',title='Product Sold by Dollar Amount')+
+  labs(x='Dollars',y='Product Name',title='Product Sold by Dollar Amount',fill=' ')+
   theme(plot.title = element_text(hjust=.5))+
-  guides(fill=F)+
-  scale_fill_manual(values = c('red','darkgreen'))
+  scale_fill_manual(values = c('darkorange','steelblue'))+
+  scale_x_continuous(labels = scales::comma)
 
-datatable(total_sales_pct,colnames = c('Product Name'=2,'Cat or Dog'=3,'Total Sales'=4,'Percentage'=5)) |>
+datatable(total_sales_pct,colnames = c('Product Name'=2,'Cat or Dog'=3,'Total Sales'=4,'Percentage'=5)) |> 
   formatCurrency('Total Sales') |> 
   formatPercentage('Percentage')
 
