@@ -1,4 +1,4 @@
-pet=import('https://github.com/alanhlam-github/dataset/raw/main/pet_store.xlsx')
+pet=readxl::read_excel('pet_store.xlsx')
 
 table(is.na(pet))
 table(duplicated(pet))
@@ -152,18 +152,20 @@ total_sales_pct |>
   ggplot(aes(x=total_sales,y=reorder(prod_title,total_sales),fill=prod_animal_type))+
   geom_bar(stat='identity')+
   theme_bw()+
-  labs(x='Dollars',y='Product Name',title='Product Sold by Dollar Amount',fill=' ')+
+  labs(x='Dollars',y='Item Name',title='Product Items Sold by Dollar Amount',fill=' ')+
   theme(plot.title = element_text(hjust=.5))+
   scale_fill_manual(values = c('darkorange','steelblue'))+
-  scale_x_continuous(labels = scales::comma)
+  scale_x_continuous(labels = scales::comma)+
+  theme(legend.position='top')+
+  expand_limits(x=500000)
 
 datatable(total_sales_pct,colnames = c('Product Name'=2,'Cat or Dog'=3,'Total Sales'=4,'Percentage'=5)) |> 
   formatCurrency('Total Sales') |> 
   formatPercentage('Percentage')
 
-#create pct for reddy beddy overall sales
+#create pct for Item6 overall sales
 reddybeddy_overallsales= pet |> 
-  filter(prod_title %in% c('Reddy Beddy')) |>
+  filter(prod_title %in% c('Item6')) |>
   group_by(cust_state) |> 
   summarise(total_sales=sum(total_sales),n()) |> 
   arrange(-total_sales)
@@ -179,7 +181,7 @@ datatable(reddybeddy_pctoverallsales,colnames=c('State'=2,'Total Sales'=3,'Perce
 
 #Group by date for Reddy
 reddy_group_date=pet |> 
-  filter(prod_title %in% c('Reddy Beddy')) |>
+  filter(prod_title %in% c('Item6')) |>
   group_by(date) |> 
   summarise(total_sales=sum(total_sales))
 
@@ -187,7 +189,7 @@ reddy_group_date=pet |>
 reddy_group_date |> 
   ggplot(aes(x=date,y=total_sales))+
   geom_line(lwd=1)+
-  labs(title='Reddy Beddy Daily Sales',x='Date',y='Dollars')+
+  labs(title='Item6 Daily Sales',x='Date',y='Dollars')+
   theme(plot.title = element_text(hjust=.5))+
   expand_limits(y=8000)+
   scale_y_continuous(labels = scales::comma)
