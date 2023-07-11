@@ -8,10 +8,9 @@ ads=ads |>
 dim(ads)
 tail(ads)
 
-
 ## What are the daily and monthly conversions?
 
-ads %>% 
+ads |> 
   ggplot(aes(x=Date,y=`Google Ad Conversions`,color=`Google Ad Conversions`))+
   labs(title='Daily Google Ad Conversions',y='Conversions',x='Date',col=' ')+
   geom_line(lwd=.5)+
@@ -21,7 +20,7 @@ ads %>%
   scale_color_gradient(high='darkgreen',low='lightgreen')+
   expand_limits(y=10)
 
-ads %>% 
+ads |> 
   ggplot(aes(x=Date,y=`Facebook Ad Conversions`,col=`Facebook Ad Conversions`))+
   labs(title='Daily Facebook Ad Conversions',y='Conversions',x='Date',col=' ')+
   geom_line(lwd=.5)+
@@ -71,12 +70,12 @@ grid.arrange(m1,m2)
 shapiro.test(ads$`Facebook Ad Conversions`)
 shapiro.test(ads$`Google Ad Conversions`)
 
-ads %>% 
+ads |> 
   ggplot(aes(`Facebook Ad Conversions`))+
   geom_histogram(aes(y=..density..))+
   geom_density(color='blue',lwd=1)
 
-ads %>% 
+ads |> 
   ggplot(aes(`Google Ad Conversions`))+
   geom_histogram(aes(y=..density..))+
   geom_density(color='red',lwd=1)
@@ -98,7 +97,7 @@ ads |>
 #Assumption checks for LM
 library(performance)
 
-ads2=ads %>% 
+ads2=ads |> 
   mutate(facebook_clicks=`Facebook Ad Clicks`,
          facebook_conversions=`Facebook Ad Conversions`,facebook_adviews=`Facebook Ad Views`)
 
@@ -113,19 +112,13 @@ summary(fb_model)
 
 report(fb_model)
 
-
-
-
 ### Predictive Model
-
-#Regression model
 new_clicks=data.frame(facebook_clicks=c(25,50,100))
 
 predict(fb_model,new_clicks)
-```
 
 #Scatter plot for model
-ads2 %>% 
+ads2 |> 
   ggplot(aes(x=facebook_clicks,y=facebook_conversions))+
   geom_point()+
   geom_smooth(method='auto')+
