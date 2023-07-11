@@ -164,29 +164,29 @@ datatable(total_sales_pct,colnames = c('Product Name'=2,'Cat or Dog'=3,'Total Sa
   formatPercentage('Percentage')
 
 #create pct for Item6 overall sales
-reddybeddy_overallsales= pet |> 
+Item6_overallsales= pet |> 
   filter(prod_title %in% c('Item6')) |>
   group_by(cust_state) |> 
   summarise(total_sales=sum(total_sales),n()) |> 
   arrange(-total_sales)
 
-reddybeddy_pctoverallsales= reddybeddy_overallsales |> 
+Item6_pctoverallsales= Item6_overallsales |> 
   group_by(cust_state,total_sales) |> 
   summarise(pct=sum(total_sales)/408023.09) |> 
   arrange(-pct)
 
-datatable(reddybeddy_pctoverallsales,colnames=c('State'=2,'Total Sales'=3,'Percentage'=4)) |> 
+datatable(Item6_pctoverallsales,colnames=c('State'=2,'Total Sales'=3,'Percentage'=4)) |> 
   formatPercentage('Percentage') |> 
   formatCurrency('Total Sales')
 
-#Group by date for Reddy
-reddy_group_date=pet |> 
+#Group by date for Item6
+Item6_group_date=pet |> 
   filter(prod_title %in% c('Item6')) |>
   group_by(date) |> 
   summarise(total_sales=sum(total_sales))
 
 #Line plot
-reddy_group_date |> 
+Item6_group_date |> 
   ggplot(aes(x=date,y=total_sales))+
   geom_line(lwd=1)+
   labs(title='Item6 Daily Sales',x='Date',y='Dollars')+
