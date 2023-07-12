@@ -34,7 +34,8 @@ ads |>
 #create monthly bar plot of conversions
 ads_monthly=ads |> 
   group_by(date2) |> 
-  summarise(fb_conversions=sum(`Facebook Ad Conversions`),goo_conversions=sum(`Google Ad Conversions`))
+  summarise(fb_conversions=sum(`Facebook Ad Conversions`),
+            goo_conversions=sum(`Google Ad Conversions`))
 
 m1=ads_monthly |> 
   ggplot(aes(x=date2,y=goo_conversions,fill=goo_conversions))+
@@ -45,7 +46,8 @@ m1=ads_monthly |>
   scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),
                      labels=c('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'))+
   expand_limits(y=200)+
-  scale_fill_gradient(high='darkgreen',low='lightgreen')
+  scale_fill_gradient(high='darkgreen',low='lightgreen')+
+  geom_smooth(method='auto',se=F)
 
 m2=ads_monthly |> 
   ggplot(aes(x=date2,y=fb_conversions,fill=fb_conversions))+
@@ -56,15 +58,14 @@ m2=ads_monthly |>
   scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8,9,10,11,12),
                      labels=c('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'))+
   expand_limits(y=500)+
-  scale_fill_gradient(high='darkgreen',low='lightgreen')
+  scale_fill_gradient(high='darkgreen',low='lightgreen')+
+  geom_smooth(method='auto',se=F)
 
 library(gridExtra)
 
 grid.arrange(m1,m2)
 
-  
 ## Does one platform outperform the other? If so, by how much?
-  
 #remove from report
 ---
 shapiro.test(ads$`Facebook Ad Conversions`)

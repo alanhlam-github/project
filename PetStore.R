@@ -152,7 +152,7 @@ total_sales_pct |>
   ggplot(aes(x=total_sales,y=reorder(prod_title,total_sales),fill=prod_animal_type))+
   geom_bar(stat='identity')+
   theme_bw()+
-  labs(x='Dollars',y='Item Name',title='Product Items Sold by Dollar Amount',fill=' ')+
+  labs(x='Dollars',y='Product Item',title='Product Items Sold by Dollar Amount',fill=' ')+
   theme(plot.title = element_text(hjust=.5))+
   scale_fill_manual(values = c('darkorange','steelblue'))+
   scale_x_continuous(labels = scales::comma)+
@@ -179,19 +179,42 @@ datatable(Item6_pctoverallsales,colnames=c('State'=2,'Total Sales'=3,'Percentage
   formatPercentage('Percentage') |> 
   formatCurrency('Total Sales')
 
-#Group by date for Item6
-Item6_group_date=pet |> 
+#Group by date for item6
+item6_group_daily=pet |> 
   filter(prod_title %in% c('Item6')) |>
   group_by(date) |> 
   summarise(total_sales=sum(total_sales))
 
-#Line plot
-Item6_group_date |> 
-  ggplot(aes(x=date,y=total_sales))+
-  geom_line(lwd=1)+
-  labs(title='Item6 Daily Sales',x='Date',y='Dollars')+
+item6_group_monthly=pet |> 
+  filter(prod_title %in% c('Item6')) |>
+  group_by(trans_month) |> 
+  summarise(total_sales=sum(total_sales))
+
+#Line and bar plots
+i61=item6_group_daily |> 
+  ggplot(aes(x=date,y=total_sales,col=total_sales))+
+  geom_line(stat='identity',lwd=1)+
+  theme_bw()+
+  labs(title='Item6 Daily Sales',x='Date',y='Dollars',col=' ')+
   theme(plot.title = element_text(hjust=.5))+
   expand_limits(y=8000)+
-  scale_y_continuous(labels = scales::comma)
+  scale_y_continuous(labels = scales::comma)+
+  scale_color_gradient(high='steelblue',low='lightblue')+
+  guides(col=F)
+
+i62=item6_group_monthly |> 
+  ggplot(aes(x=trans_month,y=total_sales,fill=total_sales))+
+  geom_bar(stat='identity')+
+  theme_bw()+
+  labs(title='Item6 Monthly Sales',x='Date',y='Dollars',fill=' ')+
+  theme(plot.title = element_text(hjust=.5))+
+  expand_limits(y=150000)+
+  scale_x_continuous(breaks=c(1,2,3,4,5,6),
+                     labels=c('January','February','March','April','May','June'))+
+  guides(fill=F)+
+  scale_y_continuous(labels = scales::comma)+
+  scale_fill_gradient(high='steelblue',low='lightblue')
+
+gridExtra::grid.arrange(i61,i62)
 
 sessionInfo()
