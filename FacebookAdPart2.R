@@ -8,11 +8,18 @@ ads=ads |>
 dim(ads)
 tail(ads)
 
+#Total costs per ad
+ads |> 
+  summarize('Total Facebook Cost per Ad'=sum(`Cost per Facebook Ad`),
+            'Total Google Cost per Ad'=sum(`Cost per Google Ad`)) |> 
+  datatable(rownames = F,options = list(dom='t')) |> 
+  formatCurrency(columns = c(1,2))
+
 ## What are the daily and monthly conversions?
 
 ads |> 
   ggplot(aes(x=Date,y=`Google Ad Conversions`,color=`Google Ad Conversions`))+
-  labs(title='Daily Google Ad Conversions',y='Conversions',x='Date',col=' ')+
+  labs(title='Daily Google Conversions',y='Conversions',x='Date',col=' ')+
   geom_line(lwd=.5)+
   geom_smooth(method='auto')+
   theme_bw()+
@@ -22,7 +29,7 @@ ads |>
 
 ads |> 
   ggplot(aes(x=Date,y=`Facebook Ad Conversions`,col=`Facebook Ad Conversions`))+
-  labs(title='Daily Facebook Ad Conversions',y='Conversions',x='Date',col=' ')+
+  labs(title='Daily Facebook Conversions',y='Conversions',x='Date',col=' ')+
   geom_line(lwd=.5)+
   geom_smooth(method='auto')+
   theme_bw()+
@@ -82,13 +89,13 @@ ads |>
   geom_density(color='red',lwd=1)
 ---
 
+#run stat test
 wilcox.test(ads$`Facebook Ad Conversions`,ads$`Google Ad Conversions`,paired=F)
 
 ads |> 
-  summarise('Facebook Total Conversions'=sum(`Facebook Ad Conversions`))
-
-ads |> 
-  summarise('Google Total Conversions'=sum(`Google Ad Conversions`))
+  summarise('Facebook Total Conversions'=sum(`Facebook Ad Conversions`),
+            'Google Total Conversions'=sum(`Google Ad Conversions`)) |> 
+  datatable(rownames = F,options = list(dom='t'))
 
 (4286-2183)/4286*100
 
@@ -110,8 +117,6 @@ plot(fb_model)
 
 #Regression analysis
 summary(fb_model)
-
-report(fb_model)
 
 ### Predictive Model
 new_clicks=data.frame(facebook_clicks=c(25,50,100))
