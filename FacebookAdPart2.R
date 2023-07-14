@@ -18,16 +18,6 @@ ads |>
 ## What are the daily and monthly conversions?
 
 ads |> 
-  ggplot(aes(x=Date,y=`Google Ad Conversions`,color=`Google Ad Conversions`))+
-  labs(title='Daily Google Conversions',y='Conversions',x='Date',col=' ')+
-  geom_line(lwd=.5)+
-  geom_smooth(method='auto')+
-  theme_bw()+
-  theme(plot.title=element_text(hjust=.5))+
-  scale_color_gradient(high='darkgreen',low='lightgreen')+
-  expand_limits(y=10)
-
-ads |> 
   ggplot(aes(x=Date,y=`Facebook Ad Conversions`,col=`Facebook Ad Conversions`))+
   labs(title='Daily Facebook Conversions',y='Conversions',x='Date',col=' ')+
   geom_line(lwd=.5)+
@@ -37,6 +27,15 @@ ads |>
   scale_color_gradient(high='darkgreen',low='lightgreen')+
   expand_limits(y=20)
 
+ads |> 
+  ggplot(aes(x=Date,y=`Google Ad Conversions`,color=`Google Ad Conversions`))+
+  labs(title='Daily Google Conversions',y='Conversions',x='Date',col=' ')+
+  geom_line(lwd=.5)+
+  geom_smooth(method='auto')+
+  theme_bw()+
+  theme(plot.title=element_text(hjust=.5))+
+  scale_color_gradient(high='darkgreen',low='lightgreen')+
+  expand_limits(y=10)
 
 #create monthly bar plot of conversions
 ads_monthly=ads |> 
@@ -70,7 +69,7 @@ m2=ads_monthly |>
 
 library(gridExtra)
 
-grid.arrange(m1,m2)
+grid.arrange(m2,m1)
 
 ## Does one platform outperform the other? If so, by how much?
 #remove from report
