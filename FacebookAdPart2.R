@@ -123,12 +123,14 @@ new_clicks=data.frame(facebook_clicks=c(25,50,100))
 predict(fb_model,new_clicks)
 
 #Scatter plot for model
-ads2 |> 
+scatter1=ads2 |> 
   ggplot(aes(x=facebook_clicks,y=facebook_conversions))+
   geom_point()+
-  geom_smooth(method='auto')+
-  labs(title='Predictive Model - Conversions by Clicks',x='Clicks',y='Conversions')+
+  geom_smooth(method='lm')+
+  labs(title='Facebook Ads - Conversions by Clicks',x='Clicks',y='Conversions',col=' ')+
   theme_bw()+
   theme(plot.title=element_text(hjust=.5))
+
+plotly::ggplotly(scatter1)
 
 sessionInfo()
