@@ -1,6 +1,6 @@
 ## Goal and Key Questions
 
-ads=readxl::read_excel('facebook_google_ads.xlsx')
+ads=readxl::read_excel('facebookgoogle_ads.xlsx')
 
 ads=ads |> 
   mutate(date2=month(Date))
