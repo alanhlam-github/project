@@ -76,7 +76,8 @@ pet2 |>
   theme(plot.title=element_text(hjust=.5))+
   guides(fill=F)+
   scale_fill_manual(values = c('red','darkgreen'))+
-  scale_x_continuous(labels = scales::comma)
+  scale_x_continuous(labels = scales::comma)+
+  theme(axis.text.y = element_text(size=8))
 
 #Rename variables in order
 pet |> 
